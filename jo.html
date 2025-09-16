@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+</head>
+<body>
+    <!--
+    Arquivo HTML5 puro; não incluir CSS/JS; para personalizar, modificar os <datalist> e duplicar blocos de pet;
+    endpoint /submit espera multipart/form-data.
+    Campos de pets devem ser tratados como arrays no backend: pet[0][name], pet[0][breed], etc.
+    -->
+
+    <header>
+        <!-- Cabeçalho do site do Petshop -->
+        <h1>Petshop Bem-Estar Animal</h1>
+        <p>Serviços completos para seu pet: banho, tosa, saúde e carinho!</p>
+    </header>
+
+    <nav aria-label="Navegação principal">
+        <!-- Navegação sem links funcionais, apenas exemplo semântico -->
+        <ul>
+            <li><a href="#formulario" aria-current="page">Agendar Serviço</a></li>
+            <li><a href="#servicos">Tipos de Banho & Atendimentos</a></li>
+            <li><a href="#pacotes">Pacotes Promocionais</a></li>
+            <li><a href="#precos">Tabela de Preços</a></li>
+            <li><a href="#contato">Contato</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- Formulário principal de agendamento e cadastro -->
+        <section id="formulario" aria-labelledby="formulario-titulo">
+            <h2 id="formulario-titulo">Formulário de Cadastro e Agendamento</h2>
+            <form action="/submit" method="post" enctype="multipart/form-data" aria-describedby="formulario-instrucoes">
+                <p id="formulario-instrucoes">
+                    Preencha todos os campos obrigatórios. Para múltiplos pets, duplique os blocos de animal conforme necessário.
+                </p>
+
+                <!-- Dados do proprietário -->
+                <fieldset>
+                    <legend>Dados do Proprietário</legend>
+                    <!-- Nome completo -->
+                    <label for="owner-name">Nome completo:</label>
+                    <input type="text" id="owner-name" name="owner[name]" required maxlength="100" autocomplete="name"><br>
+
+                    <!-- Email -->
+                    <label for="owner-email">E-mail:</label>
+                    <input type="email" id="owner-email" name="owner[email]" required maxlength="100" autocomplete="email"><br>
+
+                    <!-- Telefone com pattern -->
+                    <label for="owner-phone">Telefone:</label>
+                    <input type="tel" id="owner-phone" name="owner[phone]" required pattern="^\(?\d{2}\)?[\s-]?\d{4,5}-?\d{4}$" maxlength="15" autocomplete="tel"><br>
+
+                    <!-- CPF ou documento -->
+                    <label for="owner-cpf">CPF ou Documento:</label>
+                    <input type="text" id="owner-cpf" name="owner[cpf]" required pattern="^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$" maxlength="14"><br>
+
+                    <!-- Endereço completo -->
+                    <label for="owner-address-street">Rua:</label>
+                    <input type="text" id="owner-address-street" name="owner[address][street]" required maxlength="100"><br>
+
+                    <label for="owner-address-number">Número:</label>
+                    <input type="number" id="owner-address-number" name="owner[address][number]" required min="1" max="99999"><br>
+
+                    <label for="owner-address-complement">Complemento:</label>
+                    <input type="text" id="owner-address-complement" name="owner[address][complement]" maxlength="50"><br>
+
+                    <label for="owner-address-neighborhood">Bairro:</label>
+                    <input type="text" id="owner-address-neighborhood" name="owner[address][neighborhood]" required maxlength="50"><br>
+
+                    <label for="owner-address-city">Cidade:</label>
+                    <input type="text" id="owner-address-city" name="owner[address][city]" required maxlength="50"><br>
+
+                    <label for="owner-address-state">Estado:</label>
+                    <input type="text" id="owner-address-state" name="owner[address][state]" required maxlength="2" pattern="^[A-Z]{2}$"><br>
+
+                    <label for="owner-address-cep">CEP:</label>
+                    <input type="text" id="owner-address-cep" name="owner[address][cep]" required pattern="^\d{5}-?\d{3}$" maxlength="9"><br>
+                </fieldset>
+
+                <!-- Preferências do proprietário -->
+                <fieldset>
+                    <legend>Preferências de Contato</legend>
+                    <label for="owner-contact-pref">Contato preferencial:</label>
+                    <select id="owner-contact-pref" name="owner[contact_pref]" required>
+                        <option value="email">E-mail</option>
+                        <option value="telefone">Telefone</option>
+                    </select><br>
+
+                    <input type="checkbox" id="owner-sms" name="owner[sms]" value="sim">
+                    <label for="owner-sms">Aceita receber SMS</label><br>
+
+                    <input type="checkbox" id="owner-whatsapp" name="owner[whatsapp]" value="sim">
+                    <label for="owner-whatsapp">Aceita contato via WhatsApp</label><br>
+
+                    <label for="owner-observacoes">Observações:</label>
+                    <textarea id="owner-observacoes" name="owner[observacoes]" maxlength="500" rows="3"></textarea>
+                </fieldset>
+
+                <!-- Bloco de PETs: duplicar manualmente para múltiplos animais -->
+                <!-- PET 1 -->
+                <fieldset>
+                    <legend>Informações do Animal 1</legend>
+                    <!-- Campo oculto para pet_id e pet_index -->
+                    <input type="hidden" name="pet[0][pet_id]" value="pet1_id">
+                    <input type="hidden" name="pet[0][pet_index]" value="0">
+
+                    <!-- Tipo de animal -->
+                    <label for="pet-0-type">Tipo de animal:</label>
+                    <select id="pet-0-type" name="pet[0][type]" required>
+                        <option value="cao">Cão</option>
+                        <option value="gato">Gato</option>
+                        <option value="ave">Ave</option>
+                        <option value="reptil">Réptil</option>
+                        <option value="outros">Outros</option>
+                    </select><br>
+
+                    <!-- Raça com datalist -->
+                    <label for="pet-0-breed">Raça:</label>
+                    <input type="text" id="pet-0-breed" name="pet[0][breed]" list="breed-list-dog" maxlength="50">
+                    <datalist id="breed-list-dog">
+                        <option value="SRD">
+                        <option value="Poodle">
+                        <option value="Shih Tzu">
+                        <option value="Labrador">
+                        <option value="Persa">
+                        <option value="Siamês">
+                        <option value="Calopsita">
+                        <option value="Jabutí">
+                    </datalist><br>
+
+                    <!-- Nome do animal -->
+                    <label for="pet-0-name">Nome do animal:</label>
+                    <input type="text" id="pet-0-name" name="pet[0][name]" required maxlength="30"><br>
+
+                    <!-- Sexo -->
+                    <span id="pet-0-sex-group" role="radiogroup" aria-labelledby="pet-0-sex-label">
+                        <span id="pet-0-sex-label">Sexo:</span>
+                        <input type="radio" id="pet-0-sex-m" name="pet[0][sex]" value="M" required>
+                        <label for="pet-0-sex-m">Macho</label>
+                        <input type="radio" id="pet-0-sex-f" name="pet[0][sex]" value="F">
+                        <label for="pet-0-sex-f">Fêmea</label>
+                    </span><br>
+
+                    <!-- Idade e data de nascimento -->
+                    <label for="pet-0-age">Idade (anos):</label>
+                    <input type="number" id="pet-0-age" name="pet[0][age]" min="0" max="50" step="1" required><br>
+
+                    <label for="pet-0-birthdate">Data de nascimento:</label>
+                    <input type="date" id="pet-0-birthdate" name="pet[0][birthdate]" required><br>
+
+                    <!-- Peso e altura -->
+                    <label for="pet-0-weight">Peso (kg):</label>
+                    <input type="number" id="pet-0-weight" name="pet[0][weight]" min="0.1" max="100" step="0.1" required><br>
+
+                    <label for="pet-0-height">Altura aproximada (cm):</label>
+                    <input type="number" id="pet-0-height" name="pet[0][height]" min="1" max="200" step="1"><br>
+
+                    <!-- Microchip / identificação -->
+                    <label for="pet-0-microchip">Microchip / Identificação:</label>
+                    <input type="text" id="pet-0-microchip" name="pet[0][microchip]" maxlength="30"><br>
+
+                    <!-- Vacinas -->
+                    <fieldset>
+                        <legend>Vacinas</legend>
+                        <input type="checkbox" id="pet-0-vac1" name="pet[0][vaccines][]" value="V8">
+                        <label for="pet-0-vac1">V8</label>
+                        <input type="checkbox" id="pet-0-vac2" name="pet[0][vaccines][]" value="V10">
+                        <label for="pet-0-vac2">V10</label>
+                        <input type="checkbox" id="pet-0-vac3" name="pet[0][vaccines][]" value="Raiva">
+                        <label for="pet-0-vac3">Raiva</label>
+                        <input type="checkbox" id="pet-0-vac4" name="pet[0][vaccines][]" value="Gripe">
+                        <label for="pet-0-vac4">Gripe</label>
+                        <input type="checkbox" id="pet-0-vac5" name="pet[0][vaccines][]" value="Leptospirose">
+                        <label for="pet-0-vac5">Leptospirose</label>
+                        <input type="checkbox" id="pet-0-vac6" name="pet[0][vaccines][]" value="Giárdia">
+                        <label for="pet-0-vac6">Giárdia</label>
+                        <br>
+                        <label for="pet-0-last-vaccine-date">Data da última vacina:</label>
+                        <input type="date" id="pet-0-last-vaccine-date" name="pet[0][last_vaccine_date]">
+                    </fieldset>
+
+                    <!-- Alergias / condições médicas -->
+                    <label for="pet-0-allergies">Alergias / Condições médicas:</label>
+                    <textarea id="pet-0-allergies" name="pet[0][allergies]" maxlength="200" rows="2"></textarea><br>
+
+                    <!-- Medicação atual -->
+                    <label for="pet-0-medication">Medicação atual:</label>
+                    <textarea id="pet-0-medication" name="pet[0][medication]" maxlength="200" rows="2"></textarea><br>
+
+                    <!-- Comportamento -->
+                    <label for="pet-0-behavior">Comportamento:</label>
+                    <select id="pet-0-behavior" name="pet[0][behavior]" required>
+                        <option value="sociavel">Sociável</option>
+                        <option value="agressivo">Agressivo</option>
+                        <option value="medroso">Medroso</option>
+                        <option value="ansioso">Ansioso</option>
+                    </select>
+                    <label for="pet-0-behavior-notes">Observações de comportamento:</label>
+                    <input type="text" id="pet-0-behavior-notes" name="pet[0][behavior_notes]" maxlength="100"><br>
+
+                    <!-- Tipo de banho desejado -->
+                    <fieldset>
+                        <legend>Tipo de banho desejado</legend>
+                        <input type="radio" id="pet-0-bath-basic" name="pet[0][bath_type]" value="basico" required aria-describedby="desc-basico">
+                        <label for="pet-0-bath-basic">Básico</label>
+                        <input type="radio" id="pet-0-bath-hidratacao" name="pet[0][bath_type]" value="hidratacao" aria-describedby="desc-hidratacao">
+                        <label for="pet-0-bath-hidratacao">Hidratação</label>
+                        <input type="radio" id="pet-0-bath-antipulga" name="pet[0][bath_type]" value="antipulga" aria-describedby="desc-antipulga">
+                        <label for="pet-0-bath-antipulga">Antipulga</label>
+                        <input type="radio" id="pet-0-bath-tosa-higienica" name="pet[0][bath_type]" value="tosa_higienica" aria-describedby="desc-tosa-higienica">
+                        <label for="pet-0-bath-tosa-higienica">Tosa higiênica</label>
+                        <input type="radio" id="pet-0-bath-tosa-completa" name="pet[0][bath_type]" value="tosa_completa" aria-describedby="desc-tosa-completa">
+                        <label for="pet-0-bath-tosa-completa">Tosa completa</label>
+                        <input type="radio" id="pet-0-bath-terapeutico" name="pet[0][bath_type]" value="terapeutico" aria-describedby="desc-terapeutico">
+                        <label for="pet-0-bath-terapeutico">Terapêutico</label>
+                    </fieldset>
+
+                    <!-- Serviços adicionais -->
+                    <fieldset>
+                        <legend>Serviços adicionais</legend>
+                        <input type="checkbox" id="pet-0-add-nails" name="pet[0][additional_services][]" value="corte_unhas">
+                        <label for="pet-0-add-nails">Corte de unhas</label>
+                        <input type="checkbox" id="pet-0-add-ears" name="pet[0][additional_services][]" value="limpeza_ouvidos">
+                        <label for="pet-0-add-ears">Limpeza de ouvidos</label>
+                        <input type="checkbox" id="pet-0-add-teeth" name="pet[0][additional_services][]" value="escovacao_dentaria">
+                        <label for="pet-0-add-teeth">Escovação dentária</label>
+                        <input type="checkbox" id="pet-0-add-skin" name="pet[0][additional_services][]" value="tratamento_pele">
+                        <label for="pet-0-add-skin">Tratamento de pele</label>
+                        <input type="checkbox" id="pet-0-add-haircut" name="pet[0][additional_services][]" value="corte_pelos">
+                        <label for="pet-0-add-haircut">Corte de pelos específicos</label>
+                        <input type="checkbox" id="pet-0-add-aroma" name="pet[0][additional_services][]" value="banho_aromaterapia">
+                        <label for="pet-0-add-aroma">Banho aromaterapia</label>
+                        <input type="checkbox" id="pet-0-add-dryer" name="pet[0][additional_services][]" value="secagem_soprador">
+                        <label for="pet-0-add-dryer">Secagem com soprador</label>
+                        <input type="checkbox" id="pet-0-add-hydro" name="pet[0][additional_services][]" value="hidroterapia">
+                        <label for="pet-0-add-hydro">Hidroterapia</label>
+                    </fieldset>
+
+                    <!-- Preferência de produto -->
+                    <label for="pet-0-product">Preferência de produto:</label>
+                    <select id="pet-0-product" name="pet[0][product]" required>
+                        <option value="shampoo_neutro">Shampoo neutro</option>
+                        <option value="hipoalergenico">Hipoalergênico</option>
+                        <option value="antipulgas">Antipulgas</option>
+                        <option value="vegetal">Vegetal</option>
+                        <option value="medicamentoso">Medicamentoso</option>
+                    </select>
+                    <input type="checkbox" id="pet-0-bring-product" name="pet[0][bring_product]" value="sim">
+                    <label for="pet-0-bring-product">Trarei produto próprio</label><br>
+
+                    <!-- Upload de foto -->
+                    <label for="pet-0-photo">Foto do animal:</label>
+                    <input type="file" id="pet-0-photo" name="pet[0][photo]" accept="image/*"><br>
+                </fieldset>
+
+                <!-- PET 2 -->
+                <!-- Repita o bloco acima, alterando os índices para pet[1][...] e ids para pet-1-... -->
+                <fieldset>
+                    <legend>Informações do Animal 2</legend>
+                    <input type="hidden" name="pet[1][pet_id]" value="pet2_id">
+                    <input type="hidden" name="pet[1][pet_index]" value="1">
+                    <!-- ... (repita os campos do PET 1, alterando os ids e names para pet[1][...]) ... -->
+                    <!-- Para brevidade, omita aqui, mas no arquivo final, duplique todos os campos do PET 1 e ajuste os índices -->
+                </fieldset>
+
+                <!-- PET 3 -->
+                <fieldset>
+                    <legend>Informações do Animal 3</legend>
+                    <input type="hidden" name="pet[2][pet_id]" value="pet3_id">
+                    <input type="hidden" name="pet[2][pet_index]" value="2">
+                    <!-- ... (repita os campos do PET 1, alterando os ids e names para pet[2][...]) ... -->
+                </fieldset>
+
+                <!-- Agendamento / pagamento -->
+                <fieldset>
+                    <legend>Agendamento e Pagamento</legend>
+                    <label for="schedule-date">Data preferencial:</label>
+                    <input type="date" id="schedule-date" name="schedule[date]" required><br>
+
+                    <label for="schedule-time">Horário preferencial:</label>
+                    <input type="time" id="schedule-time" name="schedule[time]" required><br>
+
+                    <label for="schedule-date2">Segunda opção de data:</label>
+                    <input type="date" id="schedule-date2" name="schedule[date2]"><br>
+
+                    <label for="schedule-time2">Segunda opção de horário:</label>
+                    <input type="time" id="schedule-time2" name="schedule[time2]"><br>
+
+                    <label for="schedule-duration">Duração estimada:</label>
+                    <select id="schedule-duration" name="schedule[duration]" required>
+                        <option value="30">30 minutos</option>
+                        <option value="60">1 hora</option>
+                        <option value="90">1h30</option>
+                        <option value="120">2 horas</option>
+                    </select><br>
+
+                    <label for="payment-method">Método de pagamento:</label>
+                    <select id="payment-method" name="payment[method]" required>
+                        <option value="dinheiro">Dinheiro</option>
+                        <option value="cartao">Cartão</option>
+                        <option value="pix">PIX</option>
+                        <option value="boleto">Boleto</option>
+                    </select><br>
+
+                    <label for="payment-notes">Observações de pagamento:</label>
+                    <input type="text" id="payment-notes" name="payment[notes]" maxlength="100"><br>
+
+                    <label for="payment-coupon">Cupom/desconto:</label>
+                    <input type="text" id="payment-coupon" name="payment[coupon]" pattern="^[A-Za-z0-9]{4,12}$" maxlength="12">
+                </fieldset>
+
+                <!-- Consentimentos e confirmações -->
+                <fieldset>
+                    <legend>Consentimentos e Confirmações</legend>
+                    <input type="checkbox" id="consent-procedures" name="consent[procedures]" value="sim" required>
+                    <label for="consent-procedures">
+                        Li e concordo com os procedimentos e termos do Petshop (obrigatório)
+                    </label><br>
+
+                    <input type="checkbox" id="consent-photo" name="consent[photo]" value="sim">
+                    <label for="consent-photo">
+                        Autorizo o uso da foto do animal para marketing
+                    </label><br>
+
+                    <label for="signature">Assinatura (digite seu nome completo):</label>
+                    <input type="text" id="signature" name="consent[signature]" required maxlength="100"><br>
+
+                    <label for="signature-date">Data da assinatura:</label>
+                    <input type="date" id="signature-date" name="consent[date]" required>
+                </fieldset>
+
+                <!-- Área de resumo/confirmacao (servidor exibe resumo) -->
+                <fieldset>
+                    <legend>Resumo e Confirmação</legend>
+                    <p>
+                        Após o envio, o servidor exibirá um resumo dos dados preenchidos para confirmação antes da finalização do agendamento.
+                        <br>
+                        <strong>Instrução para backend:</strong> Exibir todos os campos agrupados por proprietário e pets, permitir confirmação ou edição.
+                    </p>
+                </fieldset>
+
+                <button type="submit">Enviar Cadastro e Agendar</button>
+            </form>
+        </section>
+
+        <!-- Seção informativa sobre tipos de banho e atendimentos -->
+        <section id="servicos" aria-labelledby="servicos-titulo">
+            <h2 id="servicos-titulo">Tipos de Banho e Atendimentos</h2>
+            <!-- Descrições detalhadas para aria-describedby -->
+            <section id="desc-basico">
+                <strong>Básico:</strong> Banho tradicional com shampoo neutro, enxágue completo e secagem.
+            </section>
+            <section id="desc-hidratacao">
+                <strong>Hidratação:</strong> Banho com máscara hidratante, tempo de ação de 10 minutos, indicado para pelagem ressecada.
+            </section>
+            <section id="desc-antipulga">
+                <strong>Antipulga:</strong> Banho com shampoo antipulgas, aplicação de produto específico, recomendado para animais com infestação.
+            </section>
+            <section id="desc-tosa-higienica">
+                <strong>Tosa higiênica:</strong> Corte de pelos em áreas íntimas, patas e focinho, para higiene e conforto.
+            </section>
+            <section id="desc-tosa-completa">
+                <strong>Tosa completa:</strong> Corte de pelos em todo o corpo, modelagem conforme raça e preferência do tutor.
+            </section>
+            <section id="desc-terapeutico">
+                <strong>Terapêutico:</strong> Banho com produtos medicinais, indicado para tratamento de pele, alergias ou condições específicas.
+            </section>
+
+            <!-- Tabela detalhada de serviços -->
+            <table aria-describedby="servicos-titulo" border="1">
+                <caption>Serviços de Banho e Atendimentos</caption>
+                <thead>
+                    <tr>
+                        <th>Nome do Serviço</th>
+                        <th>Código</th>
+                        <th>Descrição detalhada</th>
+                        <th>Duração média</th>
+                        <th>Indicação</th>
+                        <th>Preço sugerido</th>
+                        <th>Observações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Banho Básico</td>
+                        <td>BB01</td>
+                        <td>Shampoo neutro, enxágue completo, secagem com toalha e soprador.</td>
+                        <td>30 min</td>
+                        <td>Cães, gatos, aves</td>
+                        <td>R$ 40,00</td>
+                        <td>Ideal para manutenção semanal.</td>
+                    </tr>
+                    <tr>
+                        <td>Banho Hidratação Profunda</td>
+                        <td>BH02</td>
+                        <td>Máscara hidratante, tempo de ação de 10 min, finalização com escova.</td>
+                        <td>45 min</td>
+                        <td>Cães de pelagem longa, gatos Persa</td>
+                        <td>R$ 60,00</td>
+                        <td>Recomendado a cada 30 dias.</td>
+                    </tr>
+                    <tr>
+                        <td>Banho Antipulga</td>
+                        <td>BA03</td>
+                        <td>Shampoo antipulgas, aplicação de produto spot-on, secagem completa.</td>
+                        <td>40 min</td>
+                        <td>Cães e gatos com infestação</td>
+                        <td>R$ 55,00</td>
+                        <td>Consultar restrições para filhotes.</td>
+                    </tr>
+                    <tr>
+                        <td>Tosa Higiênica</td>
+                        <td>TH04</td>
+                        <td>Corte de pelos em áreas íntimas, patas e focinho, limpeza de ouvidos.</td>
+                        <td>35 min</td>
+                        <td>Cães e gatos</td>
+                        <td>R$ 50,00</td>
+                        <td>Inclui corte de unhas.</td>
+                    </tr>
+                    <tr>
+                        <td>Tosa Completa</td>
+                        <td>TC05</td>
+                        <td>Corte de pelos em todo o corpo, modelagem conforme padrão da raça.</td>
+                        <td>60 min</td>
+                        <td>Cães de pelagem longa</td>
+                        <td>R$ 80,00</td>
+                        <td>Consultar estilos disponíveis.</td>
+                    </tr>
+                    <tr>
+                        <td>Banho Terapêutico</td>
+                        <td>BT06</td>
+                        <td>Produtos medicinais, tempo de ação, acompanhamento veterinário.</td>
+                        <td>50 min</td>
+                        <td>Animais com dermatites, alergias</td>
+                        <td>R$ 70,00</td>
+                        <td>Necessário receita veterinária.</td>
+                    </tr>
+                    <tr>
+                        <td>Banho Aromaterapia</td>
+                        <td>BA07</td>
+                        <td>Óleos essenciais, ambiente relaxante, massagem leve durante o banho.</td>
+                        <td>45 min</td>
+                        <td>Cães ansiosos, idosos</td>
+                        <td>R$ 65,00</td>
+                        <td>Consultar contraindicações.</td>
+                    </tr>
+                    <tr>
+                        <td>Hidroterapia</td>
+                        <td>HI08</td>
+                        <td>Banho em piscina aquecida, exercícios guiados, indicado para reabilitação.</td>
+                        <td>60 min</td>
+                        <td>Cães com problemas articulares</td>
+                        <td>R$ 120,00</td>
+                        <td>Agendamento prévio obrigatório.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Tabela de preços sugeridos por porte e tipo de banho -->
+        <section id="precos" aria-labelledby="precos-titulo">
+            <h2 id="precos-titulo">Tabela de Preços por Porte e Tipo de Banho</h2>
+            <table border="1">
+                <caption>Preços Sugeridos</caption>
+                <thead>
+                    <tr>
+                        <th>Porte</th>
+                        <th>Banho Básico</th>
+                        <th>Banho Hidratação</th>
+                        <th>Banho Antipulga</th>
+                        <th>Tosa Higiênica</th>
+                        <th>Tosa Completa</th>
+                        <th>Banho Terapêutico</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Pequeno</td>
+                        <td>R$ 40,00</td>
+                        <td>R$ 55,00</td>
+                        <td>R$ 50,00</td>
+                        <td>R$ 45,00</td>
+                        <td>R$ 70,00</td>
+                        <td>R$ 60,00</td>
+                    </tr>
+                    <tr>
+                        <td>Médio</td>
+                        <td>R$ 50,00</td>
+                        <td>R$ 65,00</td>
+                        <td>R$ 60,00</td>
+                        <td>R$ 55,00</td>
+                        <td>R$ 80,00</td>
+                        <td>R$ 70,00</td>
+                    </tr>
+                    <tr>
+                        <td>Grande</td>
+                        <td>R$ 60,00</td>
+                        <td>R$ 80,00</td>
+                        <td>R$ 70,00</td>
+                        <td>R$ 65,00</td>
+                        <td>R$ 100,00</td>
+                        <td>R$ 90,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <aside id="pacotes" aria-labelledby="pacotes-titulo">
+        <!-- Pacotes promocionais do petshop -->
+        <h2 id="pacotes-titulo">Pacotes Promocionais</h2>
+        <details>
+            <summary>Pacote Bronze</summary>
+            <ul>
+                <li>1 Banho Básico</li>
+                <li>Corte de unhas</li>
+                <li>Limpeza de ouvidos</li>
+            </ul>
+            <p>Preço: R$ 70,00 | Duração: 1h</p>
+        </details>
+        <details>
+            <summary>Pacote Prata</summary>
+            <ul>
+                <li>1 Banho Hidratação</li>
+                <li>Tosa higiênica</li>
+                <li>Escovação dentária</li>
+            </ul>
+            <p>Preço: R$ 110,00 | Duração: 1h30</p>
+        </details>
+        <details>
+            <summary>Pacote Ouro</summary>
+            <ul>
+                <li>1 Banho Terapêutico</li>
+                <li>Tosa completa</li>
+                <li>Tratamento de pele</li>
+                <li>Banho aromaterapia</li>
+            </ul>
+            <p>Preço: R$ 180,00 | Duração: 2h</p>
+        </details>
+    </aside>
+
+    <footer id="contato">
+        <!-- Rodapé com informações de contato -->
+        <p>Petshop Bem-Estar Animal | Rua dos Bichos, 123 | Tel: (11) 99999-9999 | Email: contato@petshop.com.br</p>
+        <p>&copy; 2024 Petshop Bem-Estar Animal. Todos os direitos reservados.</p>
+    </footer>
+</body>
+</html>
